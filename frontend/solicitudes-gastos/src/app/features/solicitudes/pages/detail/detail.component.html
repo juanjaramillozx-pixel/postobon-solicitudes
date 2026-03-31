@@ -1,0 +1,127 @@
+<div class="solicitud-detail-page">
+  <div class="page-shell">
+    <header class="detail-header">
+      <div class="header-main">
+        <button type="button" class="back-link" (click)="goBack()">
+          <span class="back-icon"><</span>
+          <span>Volver al listado</span>
+        </button>
+
+        <span class="eyebrow">Detalle de solicitud</span>
+        <h1 *ngIf="item as s">Solicitud #{{ s.id }}</h1>
+        <h1 *ngIf="!item">Detalle de solicitud</h1>
+        <p class="subtitle">Consulta el estado, revisa la información registrada y ejecuta acciones desde una vista clara.</p>
+      </div>
+
+      <aside class="summary-card" aria-labelledby="detail-summary-title">
+        <span id="detail-summary-title" class="sr-only">Resumen de la solicitud</span>
+        <span class="summary-label">Estado actual</span>
+        <strong class="summary-value" *ngIf="item; else noStatus">{{ item?.estado }}</strong>
+        <ng-template #noStatus>
+          <strong class="summary-value">Sin datos</strong>
+        </ng-template>
+
+        <span
+          *ngIf="item"
+          class="status"
+          [ngClass]="{
+            'pending': item?.estado === 'Pendiente',
+            'approved': item?.estado === 'Aprobada',
+            'rejected': item?.estado === 'Rechazada'
+          }"
+        >
+          {{ item?.estado }}
+        </span>
+      </aside>
+    </header>
+
+    <section class="detail-card" *ngIf="loading && !item" aria-live="polite">
+      <div class="loading-panel">
+        <div class="spinner"></div>
+        <span>Cargando detalle de la solicitud...</span>
+      </div>
+    </section>
+
+    <section class="detail-card error-card" *ngIf="!loading && error && !item">
+      <h2>No fue posible cargar la solicitud</h2>
+      <p>{{ error }}</p>
+      <button type="button" class="btn btn-secondary" (click)="goBack()">Volver</button>
+    </section>
+
+    <div class="detail-layout" *ngIf="item as s">
+      <section class="detail-card main-card">
+        <div class="card-head">
+          <div>
+            <h2>Información general</h2>
+            <p>Datos principales registrados para esta solicitud de gasto.</p>
+          </div>
+
+          <button type="button" class="btn btn-secondary" (click)="goToEdit()" *ngIf="canEdit">
+            Editar
+          </button>
+        </div>
+
+        <div class="loading-panel inline-loading" *ngIf="refreshing" aria-live="polite">
+          <div class="spinner"></div>
+          <span>Actualizando información...</span>
+        </div>
+
+        <div class="error-card inline-error" *ngIf="error && !loading && !refreshing">
+          <p>{{ error }}</p>
+        </div>
+
+        <div class="meta-grid">
+          <article class="meta-item">
+            <span class="meta-label">Categoría</span>
+            <strong class="meta-value">{{ s.categoria || 'Sin categoría' }}</strong>
+          </article>
+
+          <article class="meta-item">
+            <span class="meta-label">Usuario</span>
+            <strong class="meta-value">{{ s.usuario || 'Sin usuario' }}</strong>
+          </article>
+
+          <article class="meta-item">
+            <span class="meta-label">Valor</span>
+            <strong class="meta-value">{{ s.valor | currency:'COP':'symbol':'1.0-0' }}</strong>
+          </article>
+
+          <article class="meta-item">
+            <span class="meta-label">Fecha del gasto</span>
+            <strong class="meta-value">{{ s.fechaGasto | date:'dd/MM/yyyy' }}</strong>
+          </article>
+        </div>
+
+        <div class="description-card">
+          <span class="meta-label">Descripción</span>
+          <p>{{ s.descripcion || 'No se registró una descripción para esta solicitud.' }}</p>
+        </div>
+      </section>
+
+      <aside class="detail-card side-card" aria-labelledby="detail-actions-title">
+        <div class="card-head compact">
+          <div>
+            <h2 id="detail-actions-title">Acciones</h2>
+            <p>Navega o decide el estado de la solicitud desde este panel.</p>
+          </div>
+        </div>
+
+        <div class="actions-stack">
+          <button type="button" class="btn btn-secondary" (click)="goBack()">Volver al listado</button>
+
+          <button type="button" class="btn btn-secondary" (click)="goToEdit()" *ngIf="canEdit">
+            Editar solicitud
+          </button>
+
+          <button type="button" class="btn btn-success" (click)="onApprove()" [disabled]="loading || refreshing" *ngIf="s.estado === 'Pendiente'">
+            Aprobar
+          </button>
+
+          <button type="button" class="btn btn-danger" (click)="onReject()" [disabled]="loading || refreshing" *ngIf="s.estado === 'Pendiente'">
+            Rechazar
+          </button>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>

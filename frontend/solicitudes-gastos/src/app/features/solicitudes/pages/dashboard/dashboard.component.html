@@ -1,0 +1,40 @@
+<div class="solicitudes-dashboard">
+
+  <h2>Dashboard</h2>
+
+  <!-- LOADING -->
+  <div *ngIf="loading" class="loading">
+    Cargando métricas...
+  </div>
+
+  <!-- CONTENIDO -->
+  <div *ngIf="!loading && total > 0" class="dashboard-grid">
+
+    <div class="card metric">
+      <h3>Total</h3>
+      <p>{{ total }}</p>
+    </div>
+
+    <div class="card metric approved">
+      <h3>Aprobadas</h3>
+      <p>{{ aprobadas }}</p>
+    </div>
+
+    <div class="card metric rejected">
+      <h3>Rechazadas</h3>
+      <p>{{ rechazadas }}</p>
+    </div>
+
+    <div class="card metric money">
+      <h3>Monto aprobado</h3>
+      <p>{{ montoAprobado | currency:'COP':'symbol':'1.0-0' }}</p>
+    </div>
+
+  </div>
+
+  <!-- EMPTY STATE -->
+  <div *ngIf="!loading && total === 0" class="empty">
+    No hay datos para mostrar.
+  </div>
+
+</div>

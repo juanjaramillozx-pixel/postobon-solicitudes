@@ -1,0 +1,27 @@
+.app-alert {
+	position: fixed;
+	top: 1rem;
+	right: 1rem;
+	padding: 0.65rem 0.9rem;
+	border-radius: 8px;
+	z-index: 1100;
+	color: #111;
+	max-width: min(420px, calc(100% - 2rem));
+	box-shadow: 0 6px 18px rgba(20,20,20,0.08);
+	animation: slideIn .28s cubic-bezier(.2,.9,.3,1);
+}
+.app-alert .content { display:flex; gap:0.75rem; align-items:center; }
+.app-alert .icon{ font-size:1.05rem; line-height:1 }
+.app-alert .message{ flex:1 }
+.app-alert .close{ background:transparent; border:0; cursor:pointer; color:inherit; font-size:1.05rem; padding:0 0.25rem }
+
+.app-alert.info { background: #eef6ff; border: 1px solid #b6d4ff; color:#063a6c }
+.app-alert.success { background: #edf7ed; border: 1px solid #c7e6c2; color:#1b5e20 }
+.app-alert.error { background: #fdecea; border: 1px solid #f5c6cb; color:#611a15 }
+
+@keyframes slideIn{
+	from{ transform: translateY(-8px); opacity:0 }
+	to{ transform: translateY(0); opacity:1 }
+}
+
+@media (max-width:480px){ .app-alert{ left:1rem; right:1rem; top:0.75rem } }

@@ -1,0 +1,38 @@
+/* Global app styles */
+:root{
+	--primary:#0d6efd;
+	--muted:#6c757d;
+	--success:#198754;
+	--danger:#dc3545;
+	--bg:#ffffff;
+}
+
+body{ font-family: Inter, system-ui, Arial, sans-serif; margin:0; background:var(--bg); color:#222 }
+
+button{ background:var(--primary); color:#fff; border:0; padding:0.4rem 0.7rem; border-radius:4px; cursor:pointer }
+button[disabled]{ opacity:0.6; cursor:not-allowed }
+
+.btn-secondary{ background:#6c757d }
+.btn-danger{ background:var(--danger) }
+.btn-success{ background:var(--success) }
+
+/* Table */
+table{ width:100%; border-collapse:collapse; margin-top:0.75rem }
+th, td{ padding:0.5rem 0.75rem; border:1px solid #eee; text-align:left }
+thead th{ background:#f8f9fa }
+tbody tr:hover{ background:#fbfbfb }
+
+.actions{ display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap }
+.list-controls{ display:flex; gap:0.5rem; margin-top:0.5rem; align-items:center }
+
+.pagination{ display:flex; gap:0.5rem; align-items:center; margin-top:0.75rem }
+
+/* Forms */
+input, textarea, select{ padding:0.45rem; border:1px solid #ddd; border-radius:4px }
+label{ font-weight:600; display:block; margin-bottom:0.25rem }
+.error{ color:var(--danger); font-size:0.9rem }
+.info{ color:var(--muted); font-size:0.95rem }
+
+/* Alert tweaks to sit above other overlays */
+.app-alert{ right:1rem; top:1rem }
+

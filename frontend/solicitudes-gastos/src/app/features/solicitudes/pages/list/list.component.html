@@ -1,0 +1,219 @@
+<div class="solicitudes-page">
+  <div class="page-shell">
+
+    <header class="page-header">
+      <div class="page-heading">
+        <span class="eyebrow">Panel administrativo</span>
+        <h1>Solicitudes de gastos</h1>
+        <p class="subtitle">Consulta, filtra y gestiona solicitudes desde una vista centralizada.</p>
+      </div>
+
+      <button type="button" class="btn btn-primary btn-create" (click)="goToCreate()">
+        <span class="btn-icon">+</span>
+        <span>Crear solicitud</span>
+      </button>
+    </header>
+
+    <section class="summary-grid" aria-label="Resumen de solicitudes">
+      <article class="summary-card">
+        <span class="summary-label">Solicitudes cargadas</span>
+        <strong class="summary-value">{{ items.length }}</strong>
+        <span class="summary-meta">Registros disponibles en memoria</span>
+      </article>
+
+      <article class="summary-card">
+        <span class="summary-label">Resultados filtrados</span>
+        <strong class="summary-value">{{ filteredItemsCount }}</strong>
+        <span class="summary-meta">Elementos después de aplicar filtros</span>
+      </article>
+
+      <article class="summary-card">
+        <span class="summary-label">Página actual</span>
+        <strong class="summary-value">{{ currentPage }} / {{ totalPages }}</strong>
+        <span class="summary-meta">Navegación de resultados</span>
+      </article>
+    </section>
+
+    <section class="card filters-card">
+      <div class="section-head">
+        <div>
+          <h2>Filtros</h2>
+          <p>Refina la búsqueda por texto, estado, categoría y rango de fechas.</p>
+        </div>
+
+        <button type="button" class="btn btn-ghost" (click)="resetFilters()">
+          Limpiar filtros
+        </button>
+      </div>
+
+      <form [formGroup]="filterForm" class="filters-grid">
+        <label class="field field-search">
+          <span class="field-label">Buscar</span>
+          <input class="input input-search" placeholder="Descripción o usuario" formControlName="search" />
+        </label>
+
+        <label class="field">
+          <span class="field-label">Estado</span>
+          <select class="input" formControlName="estado">
+            <option value="">Todos</option>
+            <option value="Pendiente">Pendiente</option>
+            <option value="Aprobada">Aprobada</option>
+            <option value="Rechazada">Rechazada</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span class="field-label">Categoría</span>
+          <select class="input" formControlName="categoria">
+            <option value="">Todas las categorías</option>
+            <option *ngFor="let c of categorias" [value]="c">{{ c }}</option>
+          </select>
+        </label>
+
+        <label class="field field-date">
+          <span class="field-label">Desde</span>
+          <input type="date" class="input input-date" formControlName="fechaFrom" />
+        </label>
+
+        <label class="field field-date">
+          <span class="field-label">Hasta</span>
+          <input type="date" class="input input-date" formControlName="fechaTo" />
+        </label>
+      </form>
+    </section>
+
+    <section class="card list-card">
+      <div class="section-head list-head">
+        <div>
+          <h2>Listado</h2>
+          <p *ngIf="!loading">{{ filteredItemsCount }} resultados encontrados.</p>
+          <p *ngIf="loading">Actualizando información de solicitudes.</p>
+        </div>
+      </div>
+
+      <div *ngIf="loading" class="loading-panel" aria-live="polite">
+        <div class="spinner"></div>
+        <span class="loading-text">Cargando solicitudes...</span>
+
+        <div class="skeleton-table" aria-hidden="true">
+          <div class="skeleton-row" *ngFor="let row of skeletonRows">
+            <span class="skeleton-cell short"></span>
+            <span class="skeleton-cell"></span>
+            <span class="skeleton-cell"></span>
+            <span class="skeleton-cell medium"></span>
+            <span class="skeleton-cell short"></span>
+            <span class="skeleton-cell medium"></span>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="!loading && pagedItems.length" class="table-shell">
+        <div class="table-wrap">
+          <table class="solicitudes-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Categoría</th>
+                <th>Usuario</th>
+                <th class="align-right">Valor</th>
+                <th>Estado</th>
+                <th class="actions-col">Acciones</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr *ngFor="let s of pagedItems; trackBy: trackById">
+                <td data-label="ID">
+                  <span class="table-id">#{{ s.id }}</span>
+                </td>
+
+                <td data-label="Categoría">
+                  <span class="table-primary">{{ s.categoria }}</span>
+                </td>
+
+                <td data-label="Usuario">
+                  <span class="table-primary">{{ s.usuario }}</span>
+                </td>
+
+                <td data-label="Valor" class="align-right value-cell">
+                  {{ s.valor | currency:'COP':'symbol':'1.0-0' }}
+                </td>
+
+                <td data-label="Estado">
+                  <span
+                    class="status"
+                    [ngClass]="{
+                      'pending': s.estado === 'Pendiente',
+                      'approved': s.estado === 'Aprobada',
+                      'rejected': s.estado === 'Rechazada'
+                    }"
+                  >
+                    {{ s.estado }}
+                  </span>
+                </td>
+
+                <td data-label="Acciones" class="actions-col">
+                  <div class="actions-group">
+                    <button
+                      type="button"
+                      class="btn btn-secondary"
+                      (click)="goToDetail(s)"
+                      [disabled]="loading"
+                    >
+                      Ver
+                    </button>
+
+                    <ng-container *ngIf="s.estado === 'Pendiente'">
+                      <button
+                        type="button"
+                        class="btn btn-success"
+                        (click)="approveQuick(s.id)"
+                        [disabled]="processingIds.has(s.id) || loading"
+                      >
+                        Aprobar
+                      </button>
+
+                      <button
+                        type="button"
+                        class="btn btn-danger"
+                        (click)="rejectQuick(s.id)"
+                        [disabled]="processingIds.has(s.id) || loading"
+                      >
+                        Rechazar
+                      </button>
+                    </ng-container>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="pagination-bar">
+          <div class="pagination-summary">
+            Página <strong>{{ currentPage }}</strong> de <strong>{{ totalPages }}</strong>
+          </div>
+
+          <div class="pagination-controls">
+            <button type="button" class="btn btn-page" (click)="setPage(currentPage - 1)" [disabled]="currentPage === 1">
+              Anterior
+            </button>
+
+            <span class="page-chip">{{ currentPage }}</span>
+
+            <button type="button" class="btn btn-page" (click)="setPage(currentPage + 1)" [disabled]="currentPage === totalPages">
+              Siguiente
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="!loading && !pagedItems.length" class="empty-state">
+        <div class="empty-icon">/</div>
+        <h3>No hay resultados</h3>
+        <p>Ajusta los filtros o crea una nueva solicitud para comenzar.</p>
+      </div>
+    </section>
+
+  </div>
+</div>

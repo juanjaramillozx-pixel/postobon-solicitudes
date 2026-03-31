@@ -1,0 +1,7 @@
+<div *ngIf="alert.message" class="app-alert" [ngClass]="alert.type" role="alert" aria-live="assertive" aria-atomic="true">
+  <div class="content">
+    <span class="icon" aria-hidden="true">⚑</span>
+    <span class="message">{{alert.message}}</span>
+    <button class="close" (click)="dismiss()" aria-label="Cerrar notificación">×</button>
+  </div>
+</div>

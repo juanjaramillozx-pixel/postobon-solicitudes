@@ -1,0 +1,123 @@
+/* OVERLAY */
+.confirm-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 2000;
+}
+
+/* MODAL BOX */
+.confirm-box {
+  background: #ffffff;
+  padding: 1.25rem 1.5rem;
+  border-radius: 10px;
+  min-width: 320px;
+  max-width: 92%;
+  box-shadow: 0 12px 40px rgba(10, 10, 10, 0.15);
+  animation: fadeInScale 0.2s ease;
+}
+
+/* MENSAJE */
+.confirm-box .message {
+  margin: 0;
+  color: #222;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+/* ACCIONES */
+.confirm-box .actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  margin-top: 1.2rem;
+}
+
+/* BOTONES BASE */
+.btn {
+  padding: 0.5rem 0.8rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+/* BOTÓN PRIMARY (CONFIRMAR) */
+.btn-primary {
+  background: var(--primary, #007bff); /* fallback incluido */
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: #0056b3;
+}
+
+/* BOTÓN SECONDARY (CANCELAR) */
+.btn-secondary {
+  background: #6c757d;
+  color: #fff;
+}
+
+.btn-secondary:hover {
+  background: #5a6268;
+}
+
+/* BOTÓN SUCCESS (OPCIONAL) */
+.btn-success {
+  background: #28a745;
+  color: #fff;
+}
+
+.btn-success:hover {
+  background: #218838;
+}
+
+/* BOTÓN DANGER (OPCIONAL) */
+.btn-danger {
+  background: #dc3545;
+  color: #fff;
+}
+
+.btn-danger:hover {
+  background: #c82333;
+}
+
+/* DISABLED */
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ANIMACIÓN */
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* RESPONSIVE */
+@media (max-width: 480px) {
+  .confirm-box {
+    width: 90%;
+    padding: 1rem;
+  }
+
+  .confirm-box .actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn {
+    width: 100%;
+  }
+}

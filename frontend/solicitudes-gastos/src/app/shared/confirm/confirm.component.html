@@ -1,0 +1,9 @@
+<div *ngIf="message" class="confirm-overlay" role="dialog" aria-modal="true">
+  <div class="confirm-box" tabindex="-1">
+    <p class="message">{{message}}</p>
+    <div class="actions">
+      <button #acceptBtn class="btn btn-primary" (click)="accept()">Confirmar</button>
+      <button class="btn btn-secondary" (click)="cancel()">Cancelar</button>
+    </div>
+  </div>
+</div>

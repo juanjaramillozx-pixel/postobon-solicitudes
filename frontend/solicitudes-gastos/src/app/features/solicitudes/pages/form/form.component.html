@@ -1,0 +1,129 @@
+<div class="solicitud-form-page">
+  <div class="page-shell">
+    <header class="page-header">
+      <div class="header-main">
+        <button type="button" class="back-link" (click)="goBack()">
+          <span class="back-icon"><</span>
+          <span>Volver al listado</span>
+        </button>
+
+        <span class="eyebrow">Gestión de solicitudes</span>
+        <h1>{{ pageTitle }}</h1>
+        <p class="subtitle">
+          {{ isEditing
+            ? 'Actualiza la información de la solicitud y guarda los cambios en un solo paso.'
+            : 'Registra una nueva solicitud con una experiencia más clara, rápida y guiada.' }}
+        </p>
+      </div>
+
+      <aside class="summary-card" aria-labelledby="form-summary-title">
+        <span id="form-summary-title" class="sr-only">Resumen del formulario</span>
+        <span class="summary-label">Estado del formulario</span>
+        <strong class="summary-value">{{ form?.disabled ? 'Solo lectura' : 'Editable' }}</strong>
+        <span class="summary-meta">
+          {{ isEditing ? 'Modo edición activo' : 'Modo creación activo' }}
+        </span>
+      </aside>
+    </header>
+
+    <form *ngIf="form" class="form-layout" [formGroup]="form" (ngSubmit)="submit()">
+      <section class="form-card main-card">
+        <div class="card-head">
+          <div>
+            <h2>Datos principales</h2>
+            <p>Completa la información básica de la solicitud de gasto.</p>
+          </div>
+
+          <span class="status-pill" [class.readonly]="form.disabled">
+            {{ form.disabled ? 'Bloqueada' : 'Lista para editar' }}
+          </span>
+        </div>
+
+        <div *ngIf="loading" class="loading-banner" aria-live="polite">
+          <span class="spinner"></span>
+          <span>{{ isEditing ? 'Cargando solicitud...' : 'Guardando información...' }}</span>
+        </div>
+
+        <div *ngIf="form.disabled" class="info-banner">
+          La solicitud no puede editarse porque ya no está en estado pendiente.
+        </div>
+
+        <div class="form-grid">
+          <label class="field field-category">
+            <span class="field-label">Categoría</span>
+            <input class="input input-compact" formControlName="categoria" placeholder="Ej. Viajes, alimentación, papelería" />
+            <span class="field-help">Usa una categoría clara para facilitar la búsqueda posterior.</span>
+            <span *ngIf="form.get('categoria')?.invalid && (form.get('categoria')?.touched || form.get('categoria')?.dirty)" class="error-message">
+              La categoría es obligatoria.
+            </span>
+          </label>
+
+          <label class="field field-user">
+            <span class="field-label">Usuario</span>
+            <input class="input input-compact" formControlName="usuario" placeholder="Nombre del solicitante" />
+            <span *ngIf="form.get('usuario')?.invalid && (form.get('usuario')?.touched || form.get('usuario')?.dirty)" class="error-message">
+              El usuario es obligatorio.
+            </span>
+          </label>
+
+          <label class="field field-wide field-description">
+            <span class="field-label">Descripción</span>
+            <textarea class="input textarea textarea-compact" formControlName="descripcion" placeholder="Describe el motivo del gasto"></textarea>
+            <div class="field-meta">
+              <span class="field-help">Máximo 500 caracteres.</span>
+              <span class="counter">{{ form.get('descripcion')?.value?.length || 0 }}/500</span>
+            </div>
+            <span *ngIf="form.get('descripcion')?.invalid && (form.get('descripcion')?.touched || form.get('descripcion')?.dirty)" class="error-message">
+              La descripción excede el máximo permitido.
+            </span>
+          </label>
+
+          <label class="field field-value">
+            <span class="field-label">Valor</span>
+            <input class="input input-compact" type="number" formControlName="valor" placeholder="0" />
+            <span *ngIf="form.get('valor')?.invalid && (form.get('valor')?.touched || form.get('valor')?.dirty)" class="error-message">
+              <span *ngIf="form.get('valor')?.errors?.['required']">El valor es obligatorio.</span>
+              <span *ngIf="form.get('valor')?.errors?.['min']">El valor debe ser mayor o igual a 1.</span>
+            </span>
+          </label>
+
+          <label class="field field-date">
+            <span class="field-label">Fecha del gasto</span>
+            <input class="input input-compact input-date" type="date" formControlName="fechaGasto" />
+            <span *ngIf="form.get('fechaGasto')?.invalid && (form.get('fechaGasto')?.touched || form.get('fechaGasto')?.dirty)" class="error-message">
+              La fecha del gasto es obligatoria.
+            </span>
+          </label>
+        </div>
+      </section>
+
+      <aside class="form-card side-card" aria-labelledby="form-actions-title">
+        <div class="card-head compact">
+          <div>
+            <h2 id="form-actions-title">Acciones</h2>
+            <p>Guarda la solicitud o vuelve al listado cuando lo necesites.</p>
+          </div>
+        </div>
+
+        <div class="tips-card">
+          <strong>Recomendaciones</strong>
+          <ul>
+            <li>Verifica que el valor y la fecha correspondan al comprobante.</li>
+            <li>Usa una descripción breve pero suficiente para auditoría.</li>
+            <li>Al guardar, volverás al listado actualizado de solicitudes.</li>
+          </ul>
+        </div>
+
+        <div class="actions-stack">
+          <button type="submit" class="btn btn-primary" [disabled]="form.invalid || loading || form.disabled">
+            {{ submitLabel }}
+          </button>
+
+          <button type="button" class="btn btn-secondary" (click)="goBack()" [disabled]="loading">
+            Volver al listado
+          </button>
+        </div>
+      </aside>
+    </form>
+  </div>
+</div>
