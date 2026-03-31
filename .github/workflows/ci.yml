@@ -11,29 +11,39 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    # =========================
     # FRONTEND
+    # =========================
     - name: Setup Node
       uses: actions/setup-node@v4
       with:
-        node-version: 18
+        node-version: 20
+        cache: 'npm'
 
     - name: Install frontend
-      run: |
-        cd frontend/solicitudes-gastos
-        npm install
+      working-directory: frontend/solicitudes-gastos
+      run: npm install
 
     - name: Run frontend tests
-      run: |
-        cd frontend/solicitudes-gastos
-        npm run test -- --watch=false
+      working-directory: frontend/solicitudes-gastos
+      run: npm run test -- --watch=false --browsers=ChromeHeadless
 
+    # =========================
     # BACKEND
+    # =========================
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
 
+    - name: Restore backend
+      working-directory: backend/SolicitudesGastos
+      run: dotnet restore
+
+    - name: Build backend
+      working-directory: backend/SolicitudesGastos
+      run: dotnet build --no-restore
+
     - name: Test backend
-      run: |
-        cd backend/SolicitudesGastos
-        dotnet test
+      working-directory: backend/SolicitudesGastos
+      run: dotnet test --no-build --verbosity normal
