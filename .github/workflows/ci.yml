@@ -19,12 +19,12 @@ jobs:
 
     - name: Install frontend
       run: |
-        cd frontend
+        cd frontend/solicitudes-gastos
         npm install
 
     - name: Run frontend tests
       run: |
-        cd frontend
+        cd frontend/solicitudes-gastos
         npm run test -- --watch=false
 
     # BACKEND
@@ -35,5 +35,5 @@ jobs:
 
     - name: Test backend
       run: |
-        cd backend
+        cd backend/SolicitudesGastos
         dotnet test
